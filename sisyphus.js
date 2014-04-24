@@ -494,8 +494,29 @@
 					if ( released ) {
 						self.options.onRelease.call( self );
 					}
-				}
-
+				},
+                
+                /**
+                 *  Detect if local storage contains any data for the form.
+                 *
+                 *  @returns boolean
+                 */
+                hasStoredData: function() {
+                    var self = this;
+                    var hasData = false;
+                    self.targets.each( function() {
+                        var target = $( this );
+                        self.findFieldsToProtect( target ).each( function() {
+                            var field = $( this );
+                            var targetFormIdAndName = target.attr( "id" ) + target.attr( "name" );
+                            var prefix = (self.options.locationBased ? self.href : "") + targetFormIdAndName + field.attr( "name" ) + self.options.customKeySuffix;
+                            if ( self.browserStorage.get( prefix ) !== null ) {
+                                hasData = true;
+                            }
+                        });
+                    });
+                    return hasData;
+                }
 			};
 		}
 
